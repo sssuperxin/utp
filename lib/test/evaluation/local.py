@@ -4,42 +4,34 @@ def local_env_settings():
     settings = EnvSettings()
 
     # Set your local paths here.
-    settings.prj_dir = '/hkfs/home/project/hk-project-p0022189/tum_yvc3016/haowu/code/UTPTrack/UTPTrack-O-0807-rebuttal-got10k'
-    settings.save_dir = settings.prj_dir
-    settings.network_path = settings.prj_dir + '/checkpoints'    # Where tracking networks are stored.
-    settings.result_plot_path = settings.save_dir + '/test/result_plots'
-    settings.results_path = settings.save_dir + '/test/tracking_results'    # Where to store tracking results
-    settings.segmentation_path = settings.save_dir + '/test/segmentation_results'
 
-    settings.data_dir = '/hkfs/home/project/hk-project-p0022189/tum_yvc3016/haowu/datasets/tracking-datasets'
-
-    settings.lasot_path = settings.data_dir + '/lasot'
-    settings.lasot_lmdb_path = ''
-    
-    settings.lasot_extension_subset_path = settings.data_dir + '/lasot_extension_subset'
-        
-    settings.trackingnet_path = settings.data_dir + '/trackingnet'
-
-    settings.got10k_path = settings.data_dir + '/got10k'
-    settings.got10k_lmdb_path = ''
-
-
-    settings.lasotlang_path = ''
+    settings.davis_dir = ''
+    settings.got10k_lmdb_path = '/mnt/e/Datasets/got10k_lmdb'
+    settings.got10k_path = '/mnt/e/Datasets/got10k'
     settings.got_packed_results_path = ''
     settings.got_reports_path = ''
-    settings.itb_path = ''
-    settings.nfs_path = ''
-    settings.otb_path = ''
-    settings.tc128_path = ''
+    settings.itb_path = '/mnt/e/Datasets/itb'
+    settings.lasot_extension_subset_path_path = '/mnt/e/Datasets/lasot_extension_subset'
+    settings.lasot_lmdb_path = '/mnt/e/Datasets/lasot_lmdb'
+    settings.lasot_path = '/mnt/e/Datasets/lasot'
+    settings.network_path = '/home/superxin/UTPTrack-O/output/test/networks'    # Where tracking networks are stored.
+    settings.nfs_path = '/mnt/e/Datasets/nfs'
+    settings.otb_path = '/mnt/e/Datasets/otb'
+    settings.prj_dir = '/home/superxin/UTPTrack-O'
+    settings.result_plot_path = '/home/superxin/UTPTrack-O/output/test/result_plots'
+    settings.results_path = '/home/superxin/UTPTrack-O/output/test/tracking_results'    # Where to store tracking results
+    settings.save_dir = '/home/superxin/UTPTrack-O/output'
+    settings.segmentation_path = '/home/superxin/UTPTrack-O/output/test/segmentation_results'
+    settings.tc128_path = '/mnt/e/Datasets/TC128'
     settings.tn_packed_results_path = ''
-    settings.tnl2k_path = ''
+    settings.tnl2k_path = '/mnt/e/Datasets/tnl2k'
     settings.tpl_path = ''
-    settings.uav_path = ''
-    settings.vot18_path = ''
-    settings.vot22_path = ''
-    settings.vot_path = ''
+    settings.trackingnet_path = '/mnt/e/Datasets/trackingnet'
+    settings.uav_path = '/mnt/e/Datasets/uav'
+    settings.vot18_path = '/mnt/e/Datasets/vot2018'
+    settings.vot22_path = '/mnt/e/Datasets/vot2022'
+    settings.vot_path = '/mnt/e/Datasets/VOT2019'
     settings.youtubevos_dir = ''
-    settings.davis_dir = ''    
-    
+
     return settings
 

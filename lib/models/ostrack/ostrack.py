@@ -3,7 +3,6 @@ Basic OSTrack model.
 """
 
 import os
-
 import torch
 from torch import nn
 from torch.nn.modules.transformer import _get_clones

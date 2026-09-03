@@ -5,6 +5,9 @@ import traceback
 from lib.train.admin import multigpu
 from torch.utils.data.distributed import DistributedSampler
 
+import time
+from datetime import datetime, timedelta
+
 
 class BaseTrainer:
     """Base trainer class. Contains functions for training and saving/loading checkpoints.
@@ -68,6 +71,8 @@ class BaseTrainer:
 
         epoch = -1
         num_tries = 1
+        start_time = time.time()  # 记录训练总开始时间
+
         for i in range(num_tries):
             try:
                 if load_latest:
@@ -82,6 +87,13 @@ class BaseTrainer:
                     self.epoch = epoch
 
                     self.train_epoch()
+
+                    # ===== 新增：打印当前时间和总耗时 =====
+                    elapsed = time.time() - start_time
+                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+                    print(
+                        f"Epoch {epoch} finished at {current_time}, total time elapsed: {str(timedelta(seconds=int(elapsed)))}")
+                    # ====================================
 
                     if self.lr_scheduler is not None:
                         if self.settings.scheduler_type != 'cosine':

@@ -13,6 +13,8 @@ torch.backends.cudnn.benchmark = False
 import _init_paths
 import lib.train.admin.settings as ws_settings
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="lib.train.data.loader")
 
 def init_seeds(seed):
     random.seed(seed)
@@ -39,10 +41,13 @@ def run_training(script_name, config_name, cudnn_benchmark=True, local_rank=-1, 
 
     torch.backends.cudnn.benchmark = cudnn_benchmark
 
-    if local_rank in [-1, 0] and dist.get_rank() == 0:
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        print('script_name: {}.py  config_name: {}.yaml'.format(script_name, config_name))
-        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    # ===== 修复分布式初始化判断，避免单卡模式调用 dist.get_rank() =====
+    if local_rank in [-1, 0]:
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+            print('script_name: {}.py  config_name: {}.yaml'.format(script_name, config_name))
+            print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    # ============================================================
 
     '''2021.1.5 set seed for different process'''
     if base_seed is not None:
@@ -58,7 +63,9 @@ def run_training(script_name, config_name, cudnn_benchmark=True, local_rank=-1, 
     if script_name_prv is not None and config_name_prv is not None:
         settings.project_path_prv = 'train/{}/{}'.format(script_name_prv, config_name_prv)
     settings.local_rank = local_rank
-    settings.dist_rank = dist.get_rank()
+    # ===== 修复：当分布式未初始化时，dist_rank 设为 -1 =====
+    settings.dist_rank = dist.get_rank() if dist.is_initialized() else -1
+    # =====================================================
     settings.save_dir = os.path.abspath(save_dir)
     settings.use_lmdb = use_lmdb
     prj_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))

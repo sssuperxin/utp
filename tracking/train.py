@@ -2,6 +2,16 @@ import os
 import argparse
 import random
 
+import warnings
+# 屏蔽所有 FutureWarning 和特定的 UserWarning
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning, module="timm")
+warnings.filterwarnings("ignore", category=UserWarning, message=".*TypedStorage.*")
+warnings.filterwarnings("ignore", category=UserWarning, message=".*resized since it had shape.*")
+warnings.filterwarnings("ignore", category=UserWarning, module="torch.cuda.amp")
+warnings.filterwarnings("ignore", category=UserWarning, message=".*TypedStorage.*")
+warnings.filterwarnings("ignore", category=UserWarning, message=".*resized since it had shape.*")
+
 
 def parse_args():
     """

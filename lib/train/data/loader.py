@@ -2,13 +2,14 @@ import torch
 import torch.utils.data.dataloader
 import importlib
 import collections
-from torch._six import string_classes
 from lib.utils import TensorDict, TensorList
 
-if float(torch.__version__[:3]) >= 1.9 or len('.'.join((torch.__version__).split('.')[0:2])) > 3:
-    int_classes = int
-else:
-    from torch._six import int_classes
+# ===== 修复 PyTorch 2.x 兼容性 =====
+# string_classes 在 torch._six 中已移除，此处直接定义
+string_classes = (str, bytes)
+# int_classes 在 PyTorch 1.9+ 中可直接使用 int
+int_classes = int
+# =================================
 
 
 def _check_use_shared_memory():
