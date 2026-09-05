@@ -44,7 +44,6 @@ class BaseTrainer:
         """Updates the trainer settings. Must be called to update internal settings."""
         if settings is not None:
             self.settings = settings
-
         if self.settings.env.workspace_dir is not None:
             self.settings.env.workspace_dir = os.path.expanduser(self.settings.env.workspace_dir)
             '''2021.1.4 New function: specify checkpoint dir'''
