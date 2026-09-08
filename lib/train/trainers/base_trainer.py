@@ -90,8 +90,12 @@ class BaseTrainer:
                     # ===== 新增：打印当前时间和总耗时 =====
                     elapsed = time.time() - start_time
                     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
-                    print(
-                        f"Epoch {epoch} finished at {current_time}, total time elapsed: {str(timedelta(seconds=int(elapsed)))}")
+                    total_sec = int(elapsed)
+                    hours = total_sec // 3600
+                    minutes = (total_sec % 3600) // 60
+                    seconds = total_sec % 60
+                    time_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                    print(f"Epoch {epoch} finished at {current_time}, total time elapsed: {time_str}")
                     # ====================================
 
                     if self.lr_scheduler is not None:
@@ -102,7 +106,9 @@ class BaseTrainer:
                     # only save the last 10 checkpoints
                     save_every_epoch = getattr(self.settings, "save_every_epoch", False)
                     save_epochs = [79, 159, 239]
-                    if epoch > (max_epochs - 1) or save_every_epoch or epoch % 10 == 0 or epoch in save_epochs or epoch > (max_epochs - 5):
+                    if (epoch % 100 == 0) or (epoch == max_epochs): #保存每100轮和最后一轮
+                    #if epoch > (max_epochs - 1) or save_every_epoch or epoch % 10 == 0 or epoch in save_epochs or epoch > (max_epochs - 5):
+                    # epoch % 10 == 0：每10轮保存一次。epoch in [79, 159, 239]：特定 epoch 额外保存。epoch > (max_epochs - 5)：最后 5 轮全部保存。epoch > (max_epochs - 1)：最后一轮必定保存。
                     # if epoch > (max_epochs - 10) or save_every_epoch or epoch % 100 == 0:
                         if self._checkpoint_dir:
                             if self.settings.local_rank in [-1, 0] and self.settings.dist_rank == 0:
@@ -202,7 +208,8 @@ class BaseTrainer:
             raise TypeError
 
         # Load network
-        checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
+        #checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
+        checkpoint_dict = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
 
         # assert net_type == checkpoint_dict['net_type'], 'Network is not of correct type.'
 
@@ -274,7 +281,8 @@ class BaseTrainer:
 
         # Load network
         print("Loading pretrained model from ", checkpoint_path)
-        checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
+        #checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
+        checkpoint_dict = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
 
         assert net_type == checkpoint_dict['net_type'], 'Network is not of correct type.'
 

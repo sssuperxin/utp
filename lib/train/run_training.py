@@ -65,7 +65,7 @@ def run_training(script_name, config_name, cudnn_benchmark=True, local_rank=-1, 
     settings.local_rank = local_rank
     # ===== 修复：当分布式未初始化时，dist_rank 设为 0 =====
     settings.dist_rank = dist.get_rank() if dist.is_initialized() else 0
-    # =====================================================
+    # =================================================
     settings.save_dir = os.path.abspath(save_dir)
     settings.use_lmdb = use_lmdb
     prj_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
