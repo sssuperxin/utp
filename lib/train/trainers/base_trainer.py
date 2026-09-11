@@ -106,7 +106,7 @@ class BaseTrainer:
                     # only save the last 10 checkpoints
                     save_every_epoch = getattr(self.settings, "save_every_epoch", False)
                     save_epochs = [79, 159, 239]
-                    if (epoch % 100 == 0) or (epoch == max_epochs): #保存每100轮和最后一轮
+                    if (epoch % 50 == 0) or (epoch == max_epochs): #保存每100轮和最后一轮
                     #if epoch > (max_epochs - 1) or save_every_epoch or epoch % 10 == 0 or epoch in save_epochs or epoch > (max_epochs - 5):
                     # epoch % 10 == 0：每10轮保存一次。epoch in [79, 159, 239]：特定 epoch 额外保存。epoch > (max_epochs - 5)：最后 5 轮全部保存。epoch > (max_epochs - 1)：最后一轮必定保存。
                     # if epoch > (max_epochs - 10) or save_every_epoch or epoch % 100 == 0:

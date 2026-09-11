@@ -87,8 +87,20 @@ class OSTrackActor(BaseActor):
         # compute l1 loss
         l1_loss = self.objective['l1'](pred_boxes_vec, gt_boxes_vec)  # (BN,4) (BN,4)
         # compute location loss
+        # if 'score_map' in pred_dict:
+        #     location_loss = self.objective['focal'](pred_dict['score_map'], gt_gaussian_maps)
+        # else:
+        #     location_loss = torch.tensor(0.0, device=l1_loss.device)
         if 'score_map' in pred_dict:
-            location_loss = self.objective['focal'](pred_dict['score_map'], gt_gaussian_maps)
+            score_map = pred_dict['score_map']
+            if torch.isnan(score_map).any() or torch.isinf(score_map).any():
+                raise ValueError(f"score_map NaN/Inf! "
+                                 f"min={score_map.min():.4f}, max={score_map.max():.4f}")
+            location_loss = self.objective['focal'](score_map, gt_gaussian_maps)
+            if torch.isnan(location_loss) or torch.isinf(location_loss):
+                raise ValueError(f"location_loss NaN/Inf! "
+                                 f"score_map range=({score_map.min():.4f},{score_map.max():.4f}), "
+                                 f"gt_map range=({gt_gaussian_maps.min():.4f},{gt_gaussian_maps.max():.4f})")
         else:
             location_loss = torch.tensor(0.0, device=l1_loss.device)
         # weighted sum

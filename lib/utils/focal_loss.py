@@ -11,13 +11,25 @@ class FocalLoss(nn.Module, ABC):
         self.alpha = alpha
         self.beta = beta
 
+
+
     def forward(self, prediction, target):
+
+        if torch.isnan(prediction).any() or torch.isinf(prediction).any():
+            raise ValueError(f"FocalLoss pred NaN/Inf! "
+                             f"min={prediction.min():.4f}, max={prediction.max():.4f}")
+        if torch.isnan(target).any() or torch.isinf(target).any():
+            raise ValueError("FocalLoss target NaN/Inf!")
+
         positive_index = target.eq(1).float()
         negative_index = target.lt(1).float()
 
         negative_weights = torch.pow(1 - target, self.beta)
         # clamp min value is set to 1e-12 to maintain the numerical stability
-        prediction = torch.clamp(prediction, 1e-12)
+
+        #prediction = torch.clamp(prediction, 1e-12)
+        eps = 1e-6
+        prediction = torch.clamp(prediction, eps, 1 - eps)
 
         positive_loss = torch.log(prediction) * torch.pow(1 - prediction, self.alpha) * positive_index
         negative_loss = torch.log(1 - prediction) * torch.pow(prediction,

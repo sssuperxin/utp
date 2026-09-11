@@ -178,9 +178,16 @@ def get_optimizer_scheduler(net, cfg):
                 if p.requires_grad:
                     print(n)
 
+    # if cfg.TRAIN.OPTIMIZER == "ADAMW":
+    #     optimizer = torch.optim.AdamW(param_dicts, lr=cfg.TRAIN.LR,
+    #                                   weight_decay=cfg.TRAIN.WEIGHT_DECAY)
     if cfg.TRAIN.OPTIMIZER == "ADAMW":
+        optimizer_args = getattr(cfg.TRAIN, 'OPTIMIZER_ARGS', {})
+        if 'eps' in optimizer_args:
+            optimizer_args['eps'] = float(optimizer_args['eps'])
         optimizer = torch.optim.AdamW(param_dicts, lr=cfg.TRAIN.LR,
-                                      weight_decay=cfg.TRAIN.WEIGHT_DECAY)
+                                      weight_decay=cfg.TRAIN.WEIGHT_DECAY,
+                                      **optimizer_args)
     else:
         raise ValueError("Unsupported Optimizer")
     if cfg.TRAIN.SCHEDULER.TYPE == 'step':

@@ -57,6 +57,8 @@ cfg.TRAIN.GRAD_CLIP_NORM = 0.1
 cfg.TRAIN.AMP = False
 cfg.TRAIN.TRAIN_CLS = False
 
+cfg.TRAIN.OPTIMIZER_ARGS = {}
+
 cfg.TRAIN.CE_START_EPOCH = 20  # candidate elimination start epoch
 cfg.TRAIN.CE_WARM_EPOCH = 80  # candidate elimination warm up epoch
 cfg.TRAIN.DROP_PATH_RATE = 0.1  # drop path rate for ViT backbone
@@ -130,6 +132,19 @@ def gen_config(config_file):
         yaml.dump(cfg_dict, f, default_flow_style=False)
 
 
+# def _update_config(base_cfg, exp_cfg):
+#     if isinstance(base_cfg, dict) and isinstance(exp_cfg, edict):
+#         for k, v in exp_cfg.items():
+#             if k in base_cfg:
+#                 if not isinstance(v, dict):
+#                     base_cfg[k] = v
+#                 else:
+#                     _update_config(base_cfg[k], v)
+#             else:
+#                 raise ValueError("{} not exist in config.py".format(k))
+#     else:
+#         return
+
 def _update_config(base_cfg, exp_cfg):
     if isinstance(base_cfg, dict) and isinstance(exp_cfg, edict):
         for k, v in exp_cfg.items():
@@ -137,12 +152,12 @@ def _update_config(base_cfg, exp_cfg):
                 if not isinstance(v, dict):
                     base_cfg[k] = v
                 else:
-                    _update_config(base_cfg[k], v)
+                    if k == 'OPTIMIZER_ARGS':
+                        base_cfg[k] = v   # 直接赋值，不递归
+                    else:
+                        _update_config(base_cfg[k], v)
             else:
                 raise ValueError("{} not exist in config.py".format(k))
-    else:
-        return
-
 
 def update_config_from_file(filename, base_cfg=None):
     exp_config = None

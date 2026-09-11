@@ -85,7 +85,7 @@ class LTRTrainer(BaseTrainer):
             if not self.use_amp:
                 loss, stats = self.actor(data)
             else:
-                with autocast():
+                with autocast(dtype=torch.float16):
                     loss, stats = self.actor(data)
 
             # backward pass and update weights
